@@ -1,0 +1,50 @@
+from airflow.models import DAG, Variable
+from airflow.decorators import task
+from airflow.providers.ssh.operators.ssh import SSHOperator
+from datetime import datetime, timedelta
+from airflow.hooks.base_hook import BaseHook
+from airflow.providers.ssh.hooks.ssh import SSHHook
+import mysql.connector
+from airflow.utils.email import send_email
+from airflow.exceptions import AirflowFailException
+
+#Modify variables accordingly, variables are project based.
+vprojname=Variable.get("flipchip_proj_projname")
+vdag_id="flipchip_execute_linux_watchdog"
+email_list=Variable.get("flipchip_proj_email_list")
+dag_start_date = datetime.now()
+
+################################ Shared functions ################################
+from shared_funcs import manage_success, manage_exception
+
+default_args = {
+    "owner": "Airflow",
+    "start_date": datetime(2024, 7, 7),
+    "depends_on_past": False,
+    "email_on_failure": False,
+    "email_on_retry": False,
+    "email": email_list,
+    "retries": 0,
+    "on_failure_callback": lambda context: manage_exception(context, vprojname)
+}
+
+with DAG(
+    dag_id="flipchip_execute_linux_watchdog",
+    schedule_interval=None,
+    default_args=default_args,
+    max_active_runs=1,
+    #max_consecutive_failed_dag_runs=10,
+    #sla_miss_callback=email_sla_missed,
+    catchup=False
+) as dag:
+
+    execute_linux_watchdog = SSHOperator(
+        task_id='execute_linux_watchdog',
+        ssh_conn_id='ssh_flipchip',
+        command='nohup '+'{{ var.value.flipchip_proj_pythonvenvpath }} {{ var.value.flipchip_proj_scriptpath }}{{ var.value.flipchip_proj_linux_watchdog }}'+' >/dev/null 2>&1 &',
+        on_success_callback=lambda context: manage_success(context, vprojname),
+        #sla=timedelta(minutes=60),
+        cmd_timeout = None
+    )
+
+    execute_linux_watchdog

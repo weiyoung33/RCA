@@ -1,0 +1,72 @@
+from airflow.models import DAG, Variable
+from airflow.decorators import task
+from datetime import datetime, timedelta, date
+from shared_funcs import manage_success, manage_exception, init_db_proj, insert_job_log_alert
+
+vprojname=Variable.get('flipchip_proj_projname')
+email_list=Variable.get('flipchip_proj_mlops_email_list')
+vdag_id='flipchip_monitor_ml'
+alert_probability=0.8
+min_lot_processed=2
+alert_flag=0
+dag_start_date=datetime.now()
+
+def send_summary_email(table, average, alert, num_days):
+    send_email(email_list, 'summary', table)
+
+@task
+def summarize_t_inference(**kwargs):
+    global alert_flag
+    db_conn_proj=None
+    db_cursor_proj=None
+    try:
+        db_conn_proj=init_db_proj('mysql_flipchip')
+        db_cursor_proj=db_conn_proj.cursor(buffered=True)
+        summary_qry='''SELECT DATE(DATE), MIN(confidence), MAX(confidence), COUNT(image), AVG(confidence)
+FROM t_inference WHERE DATE < CURRENT_DATE() AND DATE >= CURRENT_DATE() - INTERVAL 30 DAY
+GROUP BY DATE(DATE) ORDER BY DATE(DATE) DESC'''
+        db_cursor_proj.execute(summary_qry)
+        summary_records=db_cursor_proj.fetchall()
+        nb_records=len(summary_records)
+        lot_qry=f'''SELECT COUNT(DISTINCT SUBSTRING_INDEX(SUBSTRING_INDEX(Loaded_file, '_', 2), '_', -1)) AS LOT_number, DATE(LoadingTime)
+FROM t_statistics WHERE DATE(LoadingTime) < CURRENT_DATE() AND DATE(LoadingTime) >= CURRENT_DATE() - INTERVAL 30 DAY
+GROUP BY DATE(LoadingTime) ORDER BY DATE(LoadingTime) DESC LIMIT {nb_records + 1}'''
+        db_cursor_proj.execute(lot_qry)
+        lot_records=db_cursor_proj.fetchall()
+        yesterday=date.today()-timedelta(days=1)
+        alert=[]
+        lot_by_date={row[1]:row[0] for row in lot_records}
+        merged_records=[]
+        for rec in summary_records:
+            inspection_date,min_conf,max_conf,num_images,avg_conf=rec
+            lot_number=lot_by_date.get(inspection_date,0)
+            excluded=not(lot_number>=min_lot_processed)
+            merged_records.append((inspection_date,min_conf,max_conf,num_images,avg_conf,lot_number,excluded))
+        check_yesterday_qry=f"SELECT COUNT(*) FROM t_inference WHERE DATE(date) = '{yesterday}'"
+        db_cursor_proj.execute(check_yesterday_qry)
+        observations_yesterday=db_cursor_proj.fetchone()[0]
+        filtered_days=[record for record in merged_records if record[5]>=min_lot_processed]
+        last_7_days=filtered_days[:7]
+        num_days=len(last_7_days)
+        average_7_days=None
+        if num_days>0:
+            average_7_days=sum(record[4] for record in last_7_days)/num_days
+        else:
+            print('No valid days')
+        if observations_yesterday>0 and average_7_days is not None:
+            if average_7_days<=alert_probability:
+                valert=f'WARNING: Past {num_days} days has average {average_7_days}'
+                alert.append([num_days, '%.3f' % average_7_days])
+                alert_flag=1
+                insert_job_log_alert(vprojname, dag_start_date, datetime.now(), vdag_id,valert,'Model Performance',2,'AirflowAlertException')
+        elif observations_yesterday==0:
+            print('No production yesterday')
+        send_summary_email(merged_records, average_7_days, alert, num_days)
+    except Exception:
+        raise
+    finally:
+        if db_cursor_proj is not None: db_cursor_proj.close()
+        if db_conn_proj is not None: db_conn_proj.close()
+
+with DAG(dag_id='flipchip_monitor_ml'):
+    summarize_t_inference()

@@ -1,0 +1,69 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+node_modules/
+dist/
+.DS_Store
+
+# Credentials and local configuration
+.env
+.env.*
+!.env.example
+!.env.sample
+.ssh/
+*.pem
+*.key
+id_rsa
+id_ed25519
+
+# Python dependencies and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Frontend dependencies and generated build
+node_modules/
+frontend/dist/
+
+# Runtime files and backups
+logs/
+*.log
+*.pid
+*.bak
+
+# Credentials and local configuration
+.env
+.env.*
+!.env.example
+!.env.sample
+.ssh/
+*.pem
+*.key
+id_rsa
+id_ed25519
+
+# Python dependencies and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Frontend dependencies and generated build
+node_modules/
+frontend/dist/
+
+# Runtime files and backups
+logs/
+*.log
+*.pid
+*.bak
+
+# Historical configuration and installer backups
+agents/pastenv.txt
+*_backup_*/
+
+agents/pastenv.txt

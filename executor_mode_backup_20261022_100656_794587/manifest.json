@@ -1,0 +1,42 @@
+[
+  {
+    "path": "backend/app/schemas.py",
+    "existed": true,
+    "installed_sha256": "6524086bc8121b3107e28e735ca6e8bac3836d7a48e0e4dc8b6dfa525e86c8f1"
+  },
+  {
+    "path": "backend/app/onboarding_agent.py",
+    "existed": true,
+    "installed_sha256": "e6a65c64f9b7088dd43a5aa7716210ae86b39177a2040793b2cfbf20565b6345"
+  },
+  {
+    "path": "frontend/src/views/AdminOnboardingView.vue",
+    "existed": true,
+    "installed_sha256": "250e70c1f90a3ec288278f28ea4e60d0e3ab5dd355d34e1da6b1010fbf5c2d88"
+  },
+  {
+    "path": "backend/app/managed_actions.py",
+    "existed": true,
+    "installed_sha256": "45052642b67688cdf7d790eee55789ef3d1c5132dd497a6289aed34dd36c9462"
+  },
+  {
+    "path": "backend/app/managed_process.py",
+    "existed": true,
+    "installed_sha256": "abd46155c85536c3f7c3e28f99743e0dd1190130d4450edaf9fc20c5f60e2fc2"
+  },
+  {
+    "path": "backend/app/action_candidates.py",
+    "existed": false,
+    "installed_sha256": "b63d16cfc1282788154980d80b2511aae7b1d94961691a9eb8dfd0fb5f9009dc"
+  },
+  {
+    "path": "frontend/src/components/ManagedActionForm.vue",
+    "existed": true,
+    "installed_sha256": "4aff3de1beb7ea8279d521732f1355a68757ed9119b291c26e5286b9798447c2"
+  },
+  {
+    "path": "agents/managed_executor_lock.py",
+    "existed": true,
+    "installed_sha256": "4ba0ae2345452a97cdcefef7a8c31cbee7854d6fb09b7bf5b9c714db62a018d7"
+  }
+]

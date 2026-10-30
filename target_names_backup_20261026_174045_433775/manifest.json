@@ -1,0 +1,26 @@
+[
+  {
+    "path": "backend/app/target_name_suggestions.py",
+    "existed": false
+  },
+  {
+    "path": "frontend/src/composables/useTargetNameSuggestions.js",
+    "existed": false
+  },
+  {
+    "path": "frontend/src/utils/targetNameController.mjs",
+    "existed": false
+  },
+  {
+    "path": "backend/app/main.py",
+    "existed": true
+  },
+  {
+    "path": "frontend/src/services/api.js",
+    "existed": true
+  },
+  {
+    "path": "frontend/src/views/AdminOnboardingView.vue",
+    "existed": true
+  }
+]

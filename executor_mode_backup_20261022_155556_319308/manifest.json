@@ -1,0 +1,32 @@
+[
+  {
+    "path": "backend/app/schemas.py",
+    "existed": true,
+    "installed_sha256": "8cee3da74edf70e54056f2b0ac53f64ff14330bb70f6d020ad6e8341e657e93a"
+  },
+  {
+    "path": "backend/app/managed_actions.py",
+    "existed": true,
+    "installed_sha256": "12bbd34dc66eb052b50b18ba21b1e2f305798093b982dd3d6b9b7ae3809aa816"
+  },
+  {
+    "path": "backend/app/managed_process.py",
+    "existed": true,
+    "installed_sha256": "abd46155c85536c3f7c3e28f99743e0dd1190130d4450edaf9fc20c5f60e2fc2"
+  },
+  {
+    "path": "backend/app/action_candidates.py",
+    "existed": true,
+    "installed_sha256": "8fcbf86971857ca1cd277e45ea709c52d5658e12be4372e0a09ba3d8e048b667"
+  },
+  {
+    "path": "frontend/src/components/ManagedActionForm.vue",
+    "existed": true,
+    "installed_sha256": "8ff577bac3e6e3e53341639316d61664805edd5f348faff80d41a89d20428313"
+  },
+  {
+    "path": "agents/managed_executor_lock.py",
+    "existed": true,
+    "installed_sha256": "4ba0ae2345452a97cdcefef7a8c31cbee7854d6fb09b7bf5b9c714db62a018d7"
+  }
+]
