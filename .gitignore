@@ -69,3 +69,11 @@ agents/pastenv.txt
 agents/pastenv.txt
 
 /RCA_Agent_System_Technical_Documentation_Onboarding_Activation_v2.docx
+
+# Local installer backups and update bundles
+/executor_mode_backup_*/
+/source_dependency_backup_*/
+/target_names_backup_*/
+/executor_mode_update/
+/source_dependency_update/
+/verifier_diagnostic_update/
